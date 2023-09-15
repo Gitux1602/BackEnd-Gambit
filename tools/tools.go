@@ -15,7 +15,7 @@ func FechaMySQL() string {
 }
 
 func EscapeString(t string) string {
-	desc := strings.ReplaceAll(t, "'", "")
+	desc := strings.ReplaceAll(t, "'", "") //Comilla simple("'") por nada("")
 	desc = strings.ReplaceAll(desc, "\"", "")
 	return desc
 }
