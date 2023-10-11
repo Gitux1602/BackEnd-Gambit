@@ -30,7 +30,7 @@ func Manejadores(path string, method string, body string, headers map[string]str
 	case "prod":
 		return ProcesoProducts(body, path, method, user, idn, request)
 	case "stoc":
-		//return ProcesoStock(body, path, method, user, idn, request)
+		return ProcesoStock(body, path, method, user, idn, request)
 	case "addr":
 		//return ProcesoAddress(body, path, method, user, idn, request)
 	case "cate":
@@ -41,7 +41,9 @@ func Manejadores(path string, method string, body string, headers map[string]str
 
 	return 400, "Method Invalid"
 }
-
+func ProcesoStock(body string, path string, method string, user string, id int, request events.APIGatewayV2HTTPRequest) (int, string) {
+	return routers.UpdateStock(body, user, id)
+}
 func validoAuthorization(path string, method string, headers map[string]string) (bool, int, string) {
 	if (path == "product" && method == "GET") ||
 		(path == "category" && method == "GET") {
@@ -74,6 +76,17 @@ func ProcesoUsers(body string, path string, method string, user string, id strin
 }
 
 func ProcesoProducts(body string, path string, method string, user string, id int, request events.APIGatewayV2HTTPRequest) (int, string) {
+	switch method {
+	case "POST":
+		return routers.InsertProduct(body, user)
+	case "PUT":
+		return routers.UpdateProduct(body, user, id)
+	case "DELETE":
+		return routers.DeleteProduct(user, id)
+	case "GET":
+		return routers.SelectProduct(request)
+	}
+
 	return 400, "Method Invalid"
 }
 
@@ -83,6 +96,10 @@ func ProcesoCategory(body string, path string, method string, user string, id in
 		return routers.InsertCategory(body, user)
 	case "PUT":
 		return routers.UpdateCategory(body, user, id)
+	case "DELETE":
+		return routers.DeleteCategory(body, user, id)
+	case "GET":
+		return routers.SelectCategories(body, request)
 	}
 	return 400, "Method Invalid"
 }
