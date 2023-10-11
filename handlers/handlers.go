@@ -71,7 +71,19 @@ func validoAuthorization(path string, method string, headers map[string]string) 
 }
 
 func ProcesoUsers(body string, path string, method string, user string, id string, request events.APIGatewayV2HTTPRequest) (int, string) {
-
+	if path == "user/me" {
+		switch method {
+		case "PUT":
+			return routers.UpdateUser(body, user)
+		case "GET":
+			return routers.SelectUser(body, user)
+		}
+	}
+	if path == "users" { //Este lo usa el Admin para ver todos los usuarios registrados, hacer super usuario
+		if method == "GET" {
+			return routers.SelectUsers(body, user, request)
+		}
+	}
 	return 400, "Method Invalid"
 }
 
