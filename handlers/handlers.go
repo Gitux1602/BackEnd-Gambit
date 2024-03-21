@@ -32,11 +32,11 @@ func Manejadores(path string, method string, body string, headers map[string]str
 	case "stoc":
 		return ProcesoStock(body, path, method, user, idn, request)
 	case "addr":
-		//return ProcesoAddress(body, path, method, user, idn, request)
+		return ProcesoAddress(body, path, method, user, idn, request)
 	case "cate":
 		return ProcesoCategory(body, path, method, user, idn, request)
 	case "orde":
-		//return ProcesoOrder(body, path, method, user, idn, request)
+		return ProcesoOrder(body, path, method, user, idn, request)
 	}
 
 	return 400, "Method Invalid"
@@ -79,7 +79,7 @@ func ProcesoUsers(body string, path string, method string, user string, id strin
 			return routers.SelectUser(body, user)
 		}
 	}
-	if path == "users" { //Este lo usa el Admin para ver todos los usuarios registrados, hacer super usuario
+	if path == "users" { //Este lo usa el Admin para ver todos los usuarios registrados
 		if method == "GET" {
 			return routers.SelectUsers(body, user, request)
 		}
@@ -112,6 +112,28 @@ func ProcesoCategory(body string, path string, method string, user string, id in
 		return routers.DeleteCategory(body, user, id)
 	case "GET":
 		return routers.SelectCategories(body, request)
+	}
+	return 400, "Method Invalid"
+}
+func ProcesoAddress(body string, path string, method string, user string, id int, request events.APIGatewayV2HTTPRequest) (int, string) {
+	switch method {
+	case "POST":
+		return routers.InsertAddress(body, user)
+	case "PUT":
+		return routers.UpdateAddress(body, user, id)
+	case "DELETE":
+		return routers.DeleteAddress(user, id)
+	case "GET":
+		return routers.SelectAddress(user)
+	}
+	return routers.UpdateStock(body, user, id)
+}
+func ProcesoOrder(body string, path string, method string, user string, id int, request events.APIGatewayV2HTTPRequest) (int, string) {
+	switch method {
+	case "POST":
+		return routers.InsertOrder(body, user)
+	case "GET":
+		return routers.SelectOrders(user, request)
 	}
 	return 400, "Method Invalid"
 }
